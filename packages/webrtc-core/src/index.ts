@@ -1,5 +1,5 @@
-import { createPeerConnection } from "./handlers/peerConnection";
-import { getLocalMedia, toggleTrack, attachLocalTracks, onRemoteTrack } from "./handlers/media";
+import { createPeerConnection } from "./handlers/peerConnection.js";
+import { getLocalMedia, toggleTrack, attachLocalTracks, onRemoteTrack } from "./handlers/media.js";
 
 
 export { createPeerConnection, getLocalMedia, toggleTrack, attachLocalTracks, onRemoteTrack };

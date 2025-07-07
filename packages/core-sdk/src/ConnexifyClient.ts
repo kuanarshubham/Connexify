@@ -14,11 +14,12 @@ export class ConnexifyRTCClient {
 
   constructor(peerId: string, signalingURL: string) {
     this.peerId = peerId;
-    this.socket = io("http://loacalhost:3001");
+    this.socket = io("http://localhost:3000");
     this.registerSignalingHandlers();
   }
 
   async startLocalStream(constraints: MediaStreamConstraints = { audio: true, video: true }) {
+    console.log("startLocalStream");
     this.localStream = await getLocalMedia(constraints);
     return this.localStream;
   }
@@ -80,6 +81,7 @@ export class ConnexifyRTCClient {
 
     // When receiving an offer
     this.socket.on('offer', async ({ from, offer }) => {
+      console.log("Reciving offer");
       const pc = this.createPeer(from);
       await pc.setRemoteDescription(offer);
 
@@ -95,6 +97,7 @@ export class ConnexifyRTCClient {
 
     // When receiving an answer
     this.socket.on('answer', async ({ from, answer }) => {
+      console.log("Createing answer")
       const pc = this.peerConnections.get(from);
       if (!pc) return console.warn(`⚠️ No peer connection for ${from}`);
       await pc.setRemoteDescription(answer);

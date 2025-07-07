@@ -2,8 +2,9 @@
   "name": "@connexify/webrtc-core",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "w_core": "tsc -b"
+    "w_core": "tsc -b --verbose"
   },
   "keywords": [],
   "author": "",

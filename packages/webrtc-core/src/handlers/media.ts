@@ -24,6 +24,8 @@ export const attachLocalTracks = (
   for (const track of stream.getTracks()) {
     pc.addTrack(track, stream);
   }
+
+  console.log("Attach local stream");
 };
 
 

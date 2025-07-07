@@ -1,7 +1,3 @@
-import { sayHello } from '@connexify/utils';
-import { } from '@connexify/types';
+import { ConnexifyRTCClient } from "./ConnexifyClient.js";
 
-export const init = () => {
-  console.log(sayHello());
-};
-
+export { ConnexifyRTCClient };

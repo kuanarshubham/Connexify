@@ -1,45 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Connexify Demo</title>
-</head>
-<body>
-  <h2>Connexify RTC Test</h2>
-
-  <input id="roomId" placeholder="Enter Room ID" />
-  <button id="joinBtn">Join Room</button>
-
-  <h3>Local Video</h3>
-  <video id="localVideo" autoplay playsinline muted></video>
-
-  <h3>Remote Video</h3>
-  <video id="remoteVideo" autoplay playsinline></video>
-
-  <script type="module">
-    import { ConnexifyRTCClient } from '/path/to/ConnexifyRTCClient.js'; // Adjust path
-
-    const client = new ConnexifyRTCClient(`peer-${crypto.randomUUID()}`, 'http://localhost:3001');
-
-    const roomInput = document.getElementById('roomId');
-    const joinBtn = document.getElementById('joinBtn');
-    const localVideo = document.getElementById('localVideo');
-    const remoteVideo = document.getElementById('remoteVideo');
-
-    joinBtn.onclick = async () => {
-      const roomId = roomInput.value.trim();
-      if (!roomId) return alert("Please enter a Room ID.");
-
-      const localStream = await client.startLocalStream();
-      localVideo.srcObject = localStream;
-
-      await client.joinRoom(roomId);
-
-      // Manually attach remote stream when available
-      client.onRemoteStream = (stream) => {
-        remoteVideo.srcObject = stream;
-      };
-    };
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
