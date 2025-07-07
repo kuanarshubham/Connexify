@@ -1,0 +1,21 @@
+{
+  "name": "@connexify/webrtc-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "w_core": "tsc -b"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

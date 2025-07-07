@@ -1,0 +1,1 @@
+export const sayHello = () => '👋 Hello from utils!';

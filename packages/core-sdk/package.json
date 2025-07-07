@@ -1,0 +1,23 @@
+{
+  "name": "core-sdk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc -b"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@connexify/types": "workspace:*",
+    "@connexify/utils": "workspace:*",
+    "socket.io-client": "^4.8.1",
+    "@connexify/webrtc-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
+  }
+}
