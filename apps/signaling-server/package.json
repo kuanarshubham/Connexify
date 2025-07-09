@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "s_server": "tsc -b && nodemon dist/index.js"
+    "s_server": "tsc -b --verbose && nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",

@@ -11,10 +11,10 @@ export const getLocalMedia = async (
 };
 
 
-export const toggleTrack = (stream: MediaStream, kind: 'audio' | 'video', enabled: boolean) => {
-  const tracks = kind === 'audio' ? stream.getAudioTracks() : stream.getVideoTracks();
-  tracks.forEach((track) => (track.enabled = enabled));
-};
+// export const toggleTrack = (stream: MediaStream, kind: 'audio' | 'video', enabled: boolean) => {
+//   const tracks = kind === 'audio' ? stream.getAudioTracks() : stream.getVideoTracks();
+//   tracks.forEach((track) => (track.enabled = enabled));
+// };
 
 
 export const attachLocalTracks = (
@@ -22,10 +22,8 @@ export const attachLocalTracks = (
   stream: MediaStream
 ) => {
   for (const track of stream.getTracks()) {
-    pc.addTrack(track, stream);
+    pc.addTrack(track);
   }
-
-  console.log("Attach local stream");
 };
 
 
