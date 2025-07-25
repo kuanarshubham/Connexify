@@ -3,12 +3,11 @@ import './style.css';
 import { ConnexifyRTCClient } from '@connexify/core-sdk';
 
 const peerId = `peer-${crypto.randomUUID()}`;
-const client = new ConnexifyRTCClient(peerId, 'http://localhost:3000', {
+const constraint = {
   audio: true,
   video: true
-});
-
-console.log(client);
+}
+const client = new ConnexifyRTCClient(peerId, 'http://localhost:3000', constraint);
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -36,3 +35,21 @@ const roomInput = document.getElementById('roomInput') as HTMLInputElement;
 const joinBtn = document.getElementById('joinBtn') as HTMLButtonElement;
 const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
 const remoteVideo = document.getElementById('remoteVideo') as HTMLVideoElement;
+
+
+
+(async () => {
+  const localMedia = await client.startLocalStream(constraint);
+  localVideo.srcObject=localMedia;
+})();
+
+joinBtn.addEventListener("click", () => {
+  console.log("Clicked");
+  const roomId = roomInput.value.trim();
+
+  // Setup remote media handler BEFORE joining
+  client.remoteStream(remoteVideo);
+
+  // Then join the room
+  client.joinRoom(roomId);
+});

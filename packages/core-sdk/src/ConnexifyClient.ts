@@ -8,9 +8,14 @@ import {
 
 export class ConnexifyRTCClient{
   private peerId: string;
-  private socketURL: string;
+  private socket: Socket;
+  private pc: PeerService;
+
   public localStream!: MediaStream;
+  // public remoteStream!: [MediaStream]
   
+  private socketIdToUserId: Map<string, string>= new Map();
+  private userIdToSocketId: Map<string, string>=new Map();
 
   constructor(
     peerId: string, 
@@ -18,8 +23,9 @@ export class ConnexifyRTCClient{
     constraints: MediaStreamConstraints
   ){
     this.peerId=peerId;
-    this.socketURL=socketURL;
+    this.socket=io(socketURL);
     this.signalingHandlers(constraints);
+    this.pc = new PeerService();
   }
 
   async startLocalStream(constraints: MediaStreamConstraints = { audio: true, video: true }) {
@@ -28,16 +34,86 @@ export class ConnexifyRTCClient{
     return this.localStream;
   }
 
-  private async signalingHandlers(constraints: MediaStreamConstraints){
-    const pc = new PeerService();
+  remoteStream(remoteVideo: HTMLVideoElement) {
+  console.log("Registering remote stream handler...");
+
+  const remoteMedia = new MediaStream();
+  remoteVideo.srcObject = remoteMedia;
+
+  this.pc.handleRemoteMedia((track) => {
+    remoteMedia.addTrack(track); // remote stream tracks get added here later
+    console.log("Track added to remote video:", track.kind);
+  });
+}
+
+
+
+  joinRoom(roomId: string) {
+    this.socket.emit('register-peer', { peerId: this.peerId });
+    this.socket.emit('join-room', { roomId, peerId: this.peerId });
+  }
+
+  // leaveRoom() {
+  //   this.peerConnections.forEach(pc => pc.close());
+  //   this.peerConnections.clear();
+  //   this.socket.disconnect();
+  // }
+
+  async signalingHandlers(constraints: MediaStreamConstraints){
     const localMedia = await getLocalMedia(constraints);
 
     localMedia.getTracks().forEach(track => {
-      pc.handleMedia(track, localMedia);
+      this.pc.handleMedia(track, localMedia);
     });
 
-    const offer = await pc.generateOffer();
-    
+    const iceCandidate = await this.pc.sendIceCandidates();
+
+    this.socket.on("peer-joined", async ({socketId, peerId}) => {
+      console.log("Peer-joined");
+      if(socketId===this.socket.id) return;
+
+      this.socketIdToUserId.set(socketId, peerId);
+      this.userIdToSocketId.set(peerId, socketId);
+
+      const offer = await this.pc.generateOffer();
+
+      this.socket.emit("sending-offer", {offer, to:socketId, from:this.socket.id, peerId:this.peerId});
+    });
+
+    this.socket.on("getting-offer", async({offer, to, from, peerId}) => {
+      console.log("Getting-offer");
+      this.socketIdToUserId.set(from, peerId);
+      this.userIdToSocketId.set(peerId, from);
+
+      console.log("Offer gotten from other tab: ", offer);
+
+      const ans = await this.pc.generateAnswer(offer);
+      console.log("genettating answer: ", ans);
+      
+      this.socket.emit("sending-answer", {ans, to:from, from:to, peerId:this.peerId});
+    });
+
+    this.socket.on("getting-answer", async({ans, to, from, peerId}) => {
+      console.log("Getting-answer")
+      await this.pc.setLocalDescription(ans);
+
+      this.socket.emit("sending-ice-candidates-to-new-joinee", {iceCandidate, to:from, from:to, peerId});
+    });
+
+    this.socket.on("reciving-ice-candidate-as-new-joinee", async ({iceCandidate, from, to, peerId}) => {
+      console.log("reciving-ice-candidate-as-new-joinee");
+      await this.pc.addIceCandidates(iceCandidate, peerId);
+
+      this.socket.emit("sending-ice-candidates-to-prev", {iceCandidate, to:from, from:to, peerId});
+    });
+
+    this.socket.on("reciving-ice-candidate-as-prev", async ({iceCandidate, to, from, peerId}) => {
+      console.log("reciving-ice-candidate-as-prev");
+      await this.pc.addIceCandidates(iceCandidate, peerId);
+
+      console.log("signalling-done");
+      //this.socket.close();
+    });
   }
 }
 
@@ -52,7 +128,7 @@ export class ConnexifyRTCClient{
 
 
 
-// export class ConnexifyRTCClient {
+// class ConnexifyRTCClient2 {
 //   private socket: Socket;
 //   private peerId: string;
 //   private peerConnections = new Map<string, RTCPeerConnection>();

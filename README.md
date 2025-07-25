@@ -1,55 +1,54 @@
 # Connexify
 
-**Connexify** is a plug-and-play JavaScript/TypeScript SDK and web service designed to simplify building WebRTC-based real-time communication apps. It abstracts away the complex signaling, media transport, and infrastructure challenges, letting developers easily switch between peer-to-peer (P2P) and selective forwarding unit (SFU) modes — without drowning in WebRTC internals.
+**Connexify** is a developer-focused SDK and signaling service that simplifies setting up WebRTC-based real-time video calls using peer-to-peer (P2P) mesh architecture. Built with TypeScript, Socket.IO, and native WebRTC APIs, it abstracts away the signaling, SDP exchange, and ICE negotiation complexities — letting developers integrate real-time video functionality with minimal setup.
 
 ---
 
-## Why Connexify?
+## 🚀 What It Does (So Far)
 
-WebRTC is powerful but notoriously tricky to set up. Developers often struggle with:
-
-- Handling signaling protocols and connection lifecycles  
-- Managing ICE, STUN, TURN, and SDP details  
-- Building and maintaining scalable SFU infrastructure  
-
-Connexify solves these pain points by offering a clean SDK and signaling backend that take care of the heavy lifting, so you can focus on building great user experiences instead of plumbing.
+- Enables **1:1 video calls** using WebRTC in the browser
+- Provides a **modular TypeScript SDK** to initiate, manage, and tear down connections
+- Uses a **Socket.IO-based signaling server** for offer/answer and ICE candidate exchange
+- Demonstrates a clean developer experience with a basic UI for testing
 
 ---
 
-## Features
+## 🧱 Tech Stack
 
-- **Simple SDK API** in TypeScript for browser-based apps  
-- Choose between connection modes:
-  - `p2p` — direct 1:1 peer-to-peer calls  
-  - `sfu` — multi-user calls via MediaSoup SFU  
-  - `adaptive` (planned) — automatic mode switching based on call size  
-- Robust signaling server powered by Socket.IO  
-- Example React frontend to test and demonstrate features  
-- Modular, extensible architecture ready for plugin integrations  
-- Designed with scalability and production-readiness in mind  
+- **WebRTC** (P2P media exchange)
+- **Socket.IO** (Signaling over WebSockets)
+- **TypeScript** (shared across SDK and backend)
+- **Node.js + Express** (Signaling server)
+- **Turborepo + PNPM** (Monorepo structure)
+- **React + ShadCN (optional UI)** for test interface
 
 ---
 
-## Technology Stack
+## 💡 Why This Project?
 
-| Layer        | Technology                     |
-| ------------ | ------------------------------ |
-| Language     | TypeScript                    |
-| Signaling    | Socket.IO (WebSocket-based)  |
-| Media (P2P)  | Native WebRTC APIs            |
-| Media (SFU)  | MediaSoup (Node.js)           |
-| Backend      | Node.js + Express             |
-| Frontend     | React + ShadCN (example UI)  |
-| Packaging    | Turborepo + PNPM workspaces   |
-| DevOps       | Docker (planned), CI/CD       |
+Setting up even basic WebRTC requires understanding multiple moving parts:
+- Signaling flows (offer/answer, ICE candidates)
+- Connection lifecycle management
+- Media stream handling in the browser
+
+**Connexify** wraps all of this in a simple SDK and gives developers a running start. It’s designed for extensibility — future support for SFU (MediaSoup) and plugin hooks is planned — but the current implementation focuses on solid P2P foundations.
 
 ---
 
-## Getting Started
+## 📦 Example Usage (SDK Preview)
 
-### Installation
+```ts
+import { Connexify } from 'connexify';
 
-```bash
-npm install connexify
-# or
-yarn add connexify
+const conn = new Connexify({
+  mode: 'p2p',
+  media: ['audio', 'video'],
+  signalingURL: 'wss://your-signaling-server.com',
+});
+
+await conn.init();
+await conn.join('room-123');
+
+// Optional controls
+conn.toggleMic();
+conn.endCall();

@@ -11,6 +11,8 @@ export class PeerService {
   }
   private peer: RTCPeerConnection;
 
+  public peerConnections = new Map<string, RTCPeerConnection>();
+
   constructor() {
     this.peer = new RTCPeerConnection(this.config);
   }
@@ -37,6 +39,60 @@ export class PeerService {
       return offer;
     }
   }
+
+  async sendIceCandidates(){
+    this.peer.onicecandidate = ({candidate}) => {
+      
+      if(candidate){
+        console.log(candidate, " at send");
+        return candidate;
+      }
+    }
+  }
+
+  // async addIceCandidates(candidates: RTCIceCandidate, peerId: string){
+  //   console.log(candidates);
+  //   if(candidates){
+  //     if(!this.peerConnections.has(peerId)) this.peerConnections.set(peerId, new RTCPeerConnection(this.config));
+
+  //     const newPeer = this.peerConnections.get(peerId);
+  //     console.log("New Peer: ",newPeer); 
+  //     await newPeer!.addIceCandidate(candidates);
+
+  //     // newPeer!.ontrack = ({streams}) => {
+  //     //   const [newStream] = streams;
+  //     //   console.log(newStream);
+  //     // }
+  //   }
+  // }
+
+  async addIceCandidates(candidates: RTCIceCandidate, peerId: string) {
+  if (candidates) {
+    await this.peer.addIceCandidate(candidates);
+  }
+}
+
+
+  // handleRemoteMedia(){
+  //   let allPeerTracks = [];
+
+  //   this.peerConnections.forEach(pc => {
+  //     pc.ontrack = ({streams}) => {
+  //       const [newStream] = streams;
+  //       allPeerTracks.push(newStream)
+  //     }
+  //   });
+
+  //   return allPeerTracks;
+  // }
+
+  handleRemoteMedia(callback: (track: MediaStreamTrack) => void) {
+  this.peer.ontrack = ({ track }) => {
+    console.log("🎥 Remote track received:", track);
+    callback(track);
+  };
+}
+
 
   handleMedia(track: MediaStreamTrack, localStream: MediaStream){
     return this.peer.addTrack(track, localStream);
