@@ -2,8 +2,9 @@
   "name": "@connexify/types",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "types": "tsc -b"
+    "types": "tsc -b --verbose"
   },
   "keywords": [],
   "author": "",

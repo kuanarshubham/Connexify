@@ -9,5 +9,9 @@
     "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "composite": true
-  }
+  },
+  "references": [
+    { "path": "../utils" },
+    { "path": "../types" }
+  ]
 }

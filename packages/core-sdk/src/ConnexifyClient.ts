@@ -1,121 +1,113 @@
-import { io, Socket } from 'socket.io-client';
-import {
-  PeerService,
-  getLocalMedia,
-  attachLocalTracks,
-  onRemoteTrack,
-} from '@connexify/webrtc-core';
+// export class ConnexifyRTCClient{
+//   private peerId: string;
+//   private socket: Socket;
+//   private pc: PeerService;
 
-export class ConnexifyRTCClient{
-  private peerId: string;
-  private socket: Socket;
-  private pc: PeerService;
+//   public localStream!: MediaStream;
+//   // public remoteStream!: [MediaStream]
 
-  public localStream!: MediaStream;
-  // public remoteStream!: [MediaStream]
-  
-  private socketIdToUserId: Map<string, string>= new Map();
-  private userIdToSocketId: Map<string, string>=new Map();
+//   private socketIdToUserId: Map<string, string>= new Map();
+//   private userIdToSocketId: Map<string, string>=new Map();
 
-  constructor(
-    peerId: string, 
-    socketURL: string,
-    constraints: MediaStreamConstraints
-  ){
-    this.peerId=peerId;
-    this.socket=io(socketURL);
-    this.signalingHandlers(constraints);
-    this.pc = new PeerService();
-  }
+//   constructor(
+//     peerId: string, 
+//     socketURL: string,
+//     constraints: MediaStreamConstraints
+//   ){
+//     this.peerId=peerId;
+//     this.socket=io(socketURL);
+//     this.signalingHandlers(constraints);
+//     this.pc = new PeerService();
+//   }
 
-  async startLocalStream(constraints: MediaStreamConstraints = { audio: true, video: true }) {
-    console.log("startLocalStream");
-    this.localStream = await getLocalMedia(constraints);
-    return this.localStream;
-  }
+//   async startLocalStream(constraints: MediaStreamConstraints = { audio: true, video: true }) {
+//     console.log("startLocalStream");
+//     this.localStream = await getLocalMedia(constraints);
+//     return this.localStream;
+//   }
 
-  remoteStream(remoteVideo: HTMLVideoElement) {
-  console.log("Registering remote stream handler...");
+//   remoteStream(remoteVideo: HTMLVideoElement) {
+//   console.log("Registering remote stream handler...");
 
-  const remoteMedia = new MediaStream();
-  remoteVideo.srcObject = remoteMedia;
+//   const remoteMedia = new MediaStream();
+//   remoteVideo.srcObject = remoteMedia;
 
-  this.pc.handleRemoteMedia((track) => {
-    remoteMedia.addTrack(track); // remote stream tracks get added here later
-    console.log("Track added to remote video:", track.kind);
-  });
-}
+//   this.pc.handleRemoteMedia((track) => {
+//     remoteMedia.addTrack(track); // remote stream tracks get added here later
+//     console.log("Track added to remote video:", track.kind);
+//   });
+// }
 
 
 
-  joinRoom(roomId: string) {
-    this.socket.emit('register-peer', { peerId: this.peerId });
-    this.socket.emit('join-room', { roomId, peerId: this.peerId });
-  }
+//   joinRoom(roomId: string) {
+//     this.socket.emit('register-peer', { peerId: this.peerId });
+//     this.socket.emit('join-room', { roomId, peerId: this.peerId });
+//   }
 
-  // leaveRoom() {
-  //   this.peerConnections.forEach(pc => pc.close());
-  //   this.peerConnections.clear();
-  //   this.socket.disconnect();
-  // }
+//   // leaveRoom() {
+//   //   this.peerConnections.forEach(pc => pc.close());
+//   //   this.peerConnections.clear();
+//   //   this.socket.disconnect();
+//   // }
 
-  async signalingHandlers(constraints: MediaStreamConstraints){
-    const localMedia = await getLocalMedia(constraints);
+//   async signalingHandlers(constraints: MediaStreamConstraints){
+//     const localMedia = await getLocalMedia(constraints);
 
-    localMedia.getTracks().forEach(track => {
-      this.pc.handleMedia(track, localMedia);
-    });
+//     localMedia.getTracks().forEach(track => {
+//       this.pc.handleMedia(track, localMedia);
+//     });
 
-    const iceCandidate = await this.pc.sendIceCandidates();
+//     const iceCandidate = await this.pc.sendIceCandidates();
 
-    this.socket.on("peer-joined", async ({socketId, peerId}) => {
-      console.log("Peer-joined");
-      if(socketId===this.socket.id) return;
+//     this.socket.on("peer-joined", async ({socketId, peerId}) => {
+//       console.log("Peer-joined");
+//       if(socketId===this.socket.id) return;
 
-      this.socketIdToUserId.set(socketId, peerId);
-      this.userIdToSocketId.set(peerId, socketId);
+//       this.socketIdToUserId.set(socketId, peerId);
+//       this.userIdToSocketId.set(peerId, socketId);
 
-      const offer = await this.pc.generateOffer();
+//       const offer = await this.pc.generateOffer();
 
-      this.socket.emit("sending-offer", {offer, to:socketId, from:this.socket.id, peerId:this.peerId});
-    });
+//       this.socket.emit("sending-offer", {offer, to:socketId, from:this.socket.id, peerId:this.peerId});
+//     });
 
-    this.socket.on("getting-offer", async({offer, to, from, peerId}) => {
-      console.log("Getting-offer");
-      this.socketIdToUserId.set(from, peerId);
-      this.userIdToSocketId.set(peerId, from);
+//     this.socket.on("getting-offer", async({offer, to, from, peerId}) => {
+//       console.log("Getting-offer");
+//       this.socketIdToUserId.set(from, peerId);
+//       this.userIdToSocketId.set(peerId, from);
 
-      console.log("Offer gotten from other tab: ", offer);
+//       console.log("Offer gotten from other tab: ", offer);
 
-      const ans = await this.pc.generateAnswer(offer);
-      console.log("genettating answer: ", ans);
-      
-      this.socket.emit("sending-answer", {ans, to:from, from:to, peerId:this.peerId});
-    });
+//       const ans = await this.pc.generateAnswer(offer);
+//       console.log("genettating answer: ", ans);
 
-    this.socket.on("getting-answer", async({ans, to, from, peerId}) => {
-      console.log("Getting-answer")
-      await this.pc.setLocalDescription(ans);
+//       this.socket.emit("sending-answer", {ans, to:from, from:to, peerId:this.peerId});
+//     });
 
-      this.socket.emit("sending-ice-candidates-to-new-joinee", {iceCandidate, to:from, from:to, peerId});
-    });
+//     this.socket.on("getting-answer", async({ans, to, from, peerId}) => {
+//       console.log("Getting-answer")
+//       await this.pc.setLocalDescription(ans);
 
-    this.socket.on("reciving-ice-candidate-as-new-joinee", async ({iceCandidate, from, to, peerId}) => {
-      console.log("reciving-ice-candidate-as-new-joinee");
-      await this.pc.addIceCandidates(iceCandidate, peerId);
+//       this.socket.emit("sending-ice-candidates-to-new-joinee", {iceCandidate, to:from, from:to, peerId});
+//     });
 
-      this.socket.emit("sending-ice-candidates-to-prev", {iceCandidate, to:from, from:to, peerId});
-    });
+//     this.socket.on("reciving-ice-candidate-as-new-joinee", async ({iceCandidate, from, to, peerId}) => {
+//       console.log("reciving-ice-candidate-as-new-joinee");
+//       await this.pc.addIceCandidates(iceCandidate, peerId);
 
-    this.socket.on("reciving-ice-candidate-as-prev", async ({iceCandidate, to, from, peerId}) => {
-      console.log("reciving-ice-candidate-as-prev");
-      await this.pc.addIceCandidates(iceCandidate, peerId);
+//       this.socket.emit("sending-ice-candidates-to-prev", {iceCandidate, to:from, from:to, peerId});
+//     });
 
-      console.log("signalling-done");
-      //this.socket.close();
-    });
-  }
-}
+//     this.socket.on("reciving-ice-candidate-as-prev", async ({iceCandidate, to, from, peerId}) => {
+//       console.log("reciving-ice-candidate-as-prev");
+//       await this.pc.addIceCandidates(iceCandidate, peerId);
+
+//       console.log("signalling-done");
+//       //this.socket.close();
+//     });
+//   }
+// }
 
 
 
@@ -246,3 +238,147 @@ export class ConnexifyRTCClient{
 //     });
 //   }
 // }
+
+
+import { io, Socket } from 'socket.io-client';
+import {
+  PeerService,
+  Media
+} from '@connexify/webrtc-core';
+import type { constraints } from "@connexify/types";
+import type { connexifyConfig } from '@connexify/types';
+
+export class ConnexifyRTCClient {
+  private peers: Map<string, RTCPeerConnection>;
+  private media: Media;
+  public localMediaStream!: MediaStream | null;
+  private socket: Socket;
+  private configuration: constraints;
+
+  public remoteMediaStream!: Map<string, MediaStream>
+
+  public onRemoteStream?: (stream: MediaStream, peerId: string) => void;
+
+  constructor(params: connexifyConfig) {
+    this.peers = new Map();
+    this.media = new Media();
+    this.remoteMediaStream = new Map();
+
+    this.socket = io('/', {
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+    })
+    this.configuration = params.constraints;
+  }
+
+  async start() {
+    this.localMediaStream = await this.media.initMedia(this.configuration);
+    console.log(this.localMediaStream?.getTracks());
+
+    if (!this.localMediaStream) alert("Local media is not working");
+
+    console.log("Please use .remoteMediaStream to get remote streams");
+  }
+
+  private createPeer(peerId: string) {
+
+    if (this.localMediaStream !== null) {
+      console.log("creating new peer");
+      const pc = new PeerService();
+      this.localMediaStream.getTracks().forEach(track => pc.peerConnection.addTrack(track, this.localMediaStream!));
+
+      pc.peerConnection.addEventListener("track", async ({ streams: [stream] }) => {
+        this.remoteMediaStream.set(peerId, stream);
+
+        if (this.onRemoteStream) {
+          this.onRemoteStream(stream, peerId);
+        }
+      });
+
+      pc.peerConnection.addEventListener("icecandidate", ({ candidate }) => {
+        if (candidate) {
+          this.socket.emit("ice-candidate", {
+            to: peerId,
+            from: this.socket.id,
+            candidate
+          });
+        }
+      })
+
+      return pc;
+    }
+    else alert("createPeer Failed");
+  }
+
+  socketHandler() {
+    this.socket.on("connect", () => {
+      console.log("🔌 Connected to signaling server:", this.socket.id);
+    });
+
+
+    this.socket.on("new-peer", async (peerId: string) => {
+      console.log('New peer:', peerId);
+
+      const pc = this.createPeer(peerId);
+
+      if (pc) {
+        if (!this.peers.has(peerId)) {
+          this.peers.set(peerId, pc.peerConnection);
+        }
+
+        const offer = await pc.peerConnection.createOffer();
+        await pc.peerConnection.setLocalDescription(offer);
+
+        this.socket.emit("offer", {
+          to: peerId,
+          from: this.socket.id,
+          sdp: offer
+        })
+      }
+    });
+
+    this.socket.on("offer", async ({ from, sdp }) => {
+      const pc = this.createPeer(from);
+
+      if (pc) {
+        if (!this.peers.has(from)) {
+          this.peers.set(from, pc.peerConnection);
+        }
+
+        await pc.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+        const answer = await pc.peerConnection.createAnswer();
+        await pc.peerConnection.setLocalDescription(answer);
+
+        this.socket.emit("answer", {
+          to: from,
+          from: this.socket.id,
+          sdp: answer
+        });
+      }
+    });
+
+    this.socket.on("answer", async ({ from, sdp }) => {
+      await this.peers.get(from)?.setRemoteDescription(new RTCSessionDescription(sdp));
+    });
+
+    this.socket.on("ice-candidate", async ({ from, candidate }) => {
+      if (candidate) {
+        try {
+          await this.peers.get(from)?.addIceCandidate(new RTCIceCandidate(candidates));
+        }
+        catch (e) {
+          alert("error at ice-candidates");
+          console.error('ICE error:', e);
+        }
+      }
+    });
+
+    this.socket.on("peer-disconnected", (peerId) => {
+      if (this.peers.has(peerId)) {
+        this.peers.get(peerId)?.close();
+
+        this.peers.delete(peerId);
+      }
+    });
+  }
+}

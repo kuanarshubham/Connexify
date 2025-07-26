@@ -71,3 +71,10 @@ video {
 h4 {
   margin: 0.5rem 0;
 }
+
+#remoteVideos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  transform: scaleX(-1);
+}

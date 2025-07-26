@@ -18,5 +18,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "@connexify/types": "workspace:*"
+  }
 }

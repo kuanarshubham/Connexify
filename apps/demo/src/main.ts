@@ -1,13 +1,57 @@
-// main.ts
+// // main.ts
+// import './style.css';
+// import { ConnexifyRTCClient } from '@connexify/core-sdk';
+
+// const app = document.querySelector<HTMLDivElement>('#app')!;
+
+// app.innerHTML = `
+//   <div class="container">
+//     <h2>📡 Connexify WebRTC Demo</h2>
+//     <div class="controls">
+//       <input id="roomInput" type="text" placeholder="Enter Room ID" />
+//       <button id="joinBtn">Join</button>
+//     </div>
+//     <div class="videos">
+//       <div>
+//         <h4>🎤 Local Video</h4>
+//         <video id="localVideo" autoplay muted playsinline></video>
+//       </div>
+//       <div>
+//         <h4>🎥 Remote Video</h4>
+//         <div id="remoteVideos"></div> 
+//       </div>
+//     </div>
+//   </div>
+// `;
+
+// const roomInput = document.getElementById('roomInput') as HTMLInputElement;
+// const joinBtn = document.getElementById('joinBtn') as HTMLButtonElement;
+// const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
+// const remoteVideos = document.getElementById('remoteVideos') as HTMLDivElement;
+
+
+// async function connexifySetUp(){
+//   const conn = new ConnexifyRTCClient({
+//     signalingURL: new URL("https://shubham.loca.lt"),
+//     constraints:{
+//       audio: true,
+//       video:  true
+//     }
+//   });
+
+//   await conn.start();
+//   localVideo.srcObject = conn.localMediaStream;
+
+//   console.log("Local setup complete");
+
+//   conn.socketHandler();
+// }
+
+// connexifySetUp();
+
+
 import './style.css';
 import { ConnexifyRTCClient } from '@connexify/core-sdk';
-
-const peerId = `peer-${crypto.randomUUID()}`;
-const constraint = {
-  audio: true,
-  video: true
-}
-const client = new ConnexifyRTCClient(peerId, 'http://localhost:3000', constraint);
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -24,32 +68,51 @@ app.innerHTML = `
         <video id="localVideo" autoplay muted playsinline></video>
       </div>
       <div>
-        <h4>🎥 Remote Video</h4>
-        <video id="remoteVideo" autoplay playsinline></video>
+        <h4>🎥 Remote Video(s)</h4>
+        <div id="remoteVideos" class="remote-container"></div> 
       </div>
     </div>
   </div>
 `;
 
-const roomInput = document.getElementById('roomInput') as HTMLInputElement;
-const joinBtn = document.getElementById('joinBtn') as HTMLButtonElement;
 const localVideo = document.getElementById('localVideo') as HTMLVideoElement;
-const remoteVideo = document.getElementById('remoteVideo') as HTMLVideoElement;
+const remoteVideos = document.getElementById('remoteVideos') as HTMLDivElement;
 
+async function connexifySetUp() {
+  const conn = new ConnexifyRTCClient({
+    signalingURL: new URL("https://shubham.loca.lt"),
+    constraints: {
+      audio: true,
+      video: true
+    }
+  });
 
+  // Setup incoming stream handler BEFORE start
+  conn.onRemoteStream = (remoteStream: MediaStream, peerId: string) => {
+    console.log("🎥 Remote stream received from peer:", peerId);
 
-(async () => {
-  const localMedia = await client.startLocalStream(constraint);
-  localVideo.srcObject=localMedia;
-})();
+    // Check if video already exists for this peer
+    if (document.getElementById(`video-${peerId}`)) return;
 
-joinBtn.addEventListener("click", () => {
-  console.log("Clicked");
-  const roomId = roomInput.value.trim();
+    const video = document.createElement("video");
+    video.id = `video-${peerId}`;
+    video.srcObject = remoteStream;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.className = "remote-video";
+    remoteVideos.appendChild(video);
+  };
 
-  // Setup remote media handler BEFORE joining
-  client.remoteStream(remoteVideo);
+  await conn.start();
 
-  // Then join the room
-  client.joinRoom(roomId);
-});
+  // Attach local stream
+  if (conn.localMediaStream) {
+    localVideo.srcObject = conn.localMediaStream;
+  }
+
+  console.log("✅ Local stream set");
+
+  conn.socketHandler();
+}
+
+connexifySetUp();
