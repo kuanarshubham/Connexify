@@ -103,16 +103,18 @@ async function connexifySetUp() {
     remoteVideos.appendChild(video);
   };
 
-  await conn.start();
-
-  // Attach local stream
-  if (conn.localMediaStream) {
-    localVideo.srcObject = conn.localMediaStream;
-  }
-
-  console.log("✅ Local stream set");
-
   conn.socketHandler();
+
+  conn.socket.on("connect", async () => {
+    await conn.start(); // THEN start
+
+    // Set local stream after successful start
+    if (conn.localMediaStream) {
+      localVideo.srcObject = conn.localMediaStream;
+    }
+
+    console.log("✅ Local stream set");
+  });
 }
 
 connexifySetUp();

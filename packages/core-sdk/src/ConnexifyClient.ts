@@ -252,7 +252,7 @@ export class ConnexifyRTCClient {
   private peers: Map<string, RTCPeerConnection>;
   private media: Media;
   public localMediaStream!: MediaStream | null;
-  private socket: Socket;
+  public socket: Socket;
   private configuration: constraints;
 
   public remoteMediaStream!: Map<string, MediaStream>
@@ -289,6 +289,8 @@ export class ConnexifyRTCClient {
 
       pc.peerConnection.addEventListener("track", async ({ streams: [stream] }) => {
         this.remoteMediaStream.set(peerId, stream);
+
+        console.log("📡 Track received:", peerId, stream);
 
         if (this.onRemoteStream) {
           this.onRemoteStream(stream, peerId);
@@ -364,7 +366,7 @@ export class ConnexifyRTCClient {
     this.socket.on("ice-candidate", async ({ from, candidate }) => {
       if (candidate) {
         try {
-          await this.peers.get(from)?.addIceCandidate(new RTCIceCandidate(candidates));
+          await this.peers.get(from)?.addIceCandidate(new RTCIceCandidate(candidate));
         }
         catch (e) {
           alert("error at ice-candidates");
