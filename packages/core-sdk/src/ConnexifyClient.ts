@@ -22,10 +22,14 @@ export class ConnexifyRTCClient {
     this.media = new Media();
     this.remoteMediaStream = new Map();
 
-    this.socket = io('/', {
+    const signalingUrlStr = params.signalingURL.toString();
+    
+    this.socket = io(signalingUrlStr, {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
-    })
+      // Standard socket.io options to ensure cross-origin works
+      withCredentials: true 
+    });
     this.configuration = params.constraints;
   }
 
