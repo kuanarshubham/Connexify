@@ -253,10 +253,10 @@
 // function newjhDate() { return new Date(); }
 
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, Video, Wifi, Github, Command, 
+  Terminal, Wifi, Github, 
   Copy, Check, ArrowRight, Server, Activity 
 } from 'lucide-react';
 import { ConnexifyRTCClient } from '@connexify/core-sdk';
@@ -469,7 +469,7 @@ function DemoView() {
         constraints: { audio: true, video: true }
       });
 
-      client.onRemoteStream = (stream, peerId) => {
+      client.onRemoteStream = (stream: MediaStream, peerId: string) => {
         addLog(`Stream received: ${peerId.substring(0, 5)}...`);
         const vid = document.createElement('video');
         vid.srcObject = stream;
