@@ -1,5 +1,5 @@
-import { PeerService } from "./handlers/PeerService.js";
-import { Media } from "./handlers/Media.js";
+import { PeerService } from "./handlers/PeerService";
+import { Media } from "./handlers/Media";
 
 
 export { PeerService, Media };
