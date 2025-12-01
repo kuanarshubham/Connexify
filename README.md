@@ -21,7 +21,7 @@ connexify/
 │   ├── webrtc-core/         # Low-level wrappers for RTCPeerConnection & Media (Hardware layer)
 │   └── core-sdk/            # High-level Client SDK (Business Logic layer)
 └── README.md
-```text
+```
 
 ## 🚀 Current Capabilities
 
@@ -56,7 +56,7 @@ Install dependencies for all packages and apps from the root:
 
 ```bash
 pnpm install
-
+```
 
 ## 2. Build Packages
 Since this uses TypeScript Project References, you must build the packages before running the apps:
@@ -64,7 +64,7 @@ Since this uses TypeScript Project References, you must build the packages befor
 ```bash
 # Run inside the root directory
 pnpm run build --filter "./packages/**"
-
+```
 
 
 ## 3. Run the Signaling Server
@@ -73,13 +73,14 @@ pnpm run build --filter "./packages/**"
 cd apps/signaling-server
 pnpm run dev
 # Server listens on port 3000 by default
+```
 
 ## 4. Run the Demo App
 ```bash
 cd apps/demo
 pnpm run dev
 # Vite runs on port 5173
-
+```
 
 > **Note:** Ensure your `vite.config.ts` is proxying requests to your signaling server port.
 
@@ -124,7 +125,7 @@ client.socket.on("connect", async () => {
     }
 });
 
-
+```
 
 # 🔮 Future Roadmap
 
