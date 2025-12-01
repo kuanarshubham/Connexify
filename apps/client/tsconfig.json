@@ -1,11 +1,52 @@
+// {
+//   "files": [],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" },
+//     {"path": "../../packages/core-sdk"},
+//     {"path": "../../packages/types"},
+//     {"path": "../../packages/webrtc-core"},
+//     {"path": "../../packages/utils"},
+//   ]
+// }
+
+
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" },
-    {"path": "../../packages/core-sdk"},
-    {"path": "../../packages/types"},
-    {"path": "../../packages/webrtc-core"},
-    {"path": "../../packages/utils"},
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": false, 
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+
+    /* 🟢 THE FIX: Explicitly tell Client where to find the SDK source */
+    "paths": {
+      "@connexify/core-sdk": ["../../packages/core-sdk/src/index.ts"],
+      "@connexify/webrtc-core": ["../../packages/webrtc-core/src/index.ts"],
+      "@connexify/types": ["../../packages/types/src/index.ts"],
+      "@connexify/utils": ["../../packages/utils/src/index.ts"]
+    }
+  },
+  "include": [
+    "src", 
+    "../../packages/*/src/**/*" 
   ]
 }
