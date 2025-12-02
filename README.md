@@ -1,4 +1,6 @@
-# 📡 Connexify
+# <img src="./docs/assets/Logo.png" alt="📡 Connexify" width="30" style="border-radius: 50%;"> Connexify
+
+![Hero-section](./docs/assets/Hero.png)
 
 **Connexify** is a modular WebRTC ecosystem built as a monorepo. It features a lightweight SDK, a dedicated core hardware layer, and a signaling service that enables real-time video calling in the browser using **WebRTC's peer-to-peer (P2P) mesh architecture**.
 
