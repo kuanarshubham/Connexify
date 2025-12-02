@@ -1,6 +1,6 @@
-import { constraints } from "./webrtc-core.js";
+import { constraints } from "./webrtc-core";
 
 export interface connexifyConfig{
-    signalingURL: URL,
+    signalingURL: string,
     constraints: constraints
 }

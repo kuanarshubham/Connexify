@@ -1,3 +1,46 @@
+// {
+//   "extends": "../../tsconfig.json",
+//   "compilerOptions": {
+//     "composite": true,
+//     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+//     "target": "ES2020",
+//     "useDefineForClassFields": true,
+//     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+//     "module": "ESNext",
+//     "skipLibCheck": true,
+
+//     /* Bundler mode */
+//     "moduleResolution": "bundler",
+//     "allowImportingTsExtensions": true,
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "moduleDetection": "force",
+//     "noEmit": true,
+//     "jsx": "react-jsx",
+
+//     /* Linting */
+//     "strict": true,
+//     "noUnusedLocals": false, 
+//     "noUnusedParameters": false,
+//     "noFallthroughCasesInSwitch": true,
+
+//     /* 🟢 THE FIX: Explicitly tell Client where to find the SDK source */
+//     "paths": {
+//       "@connexify/core-sdk": ["../../packages/core-sdk/src/index.ts"],
+//       "@connexify/webrtc-core": ["../../packages/webrtc-core/src/index.ts"],
+//       "@connexify/types": ["../../packages/types/index.ts"],
+//       "@connexify/utils": ["../../packages/utils/src/index.ts"]
+
+//     }
+//   },
+//   "include": [
+//     "src", 
+//     "../../packages/*/src/**/*" ,
+//     "src/vite-env.d.ts"
+//   ]
+// }
+
+
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
@@ -8,8 +51,6 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
@@ -17,25 +58,18 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Linting */
     "strict": true,
-    "noUnusedLocals": false, 
+    "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-
-    /* 🟢 THE FIX: Explicitly tell Client where to find the SDK source */
+    
+    /* 🟢 ENSURE THIS SECTION EXISTS */
     "paths": {
       "@connexify/core-sdk": ["../../packages/core-sdk/src/index.ts"],
       "@connexify/webrtc-core": ["../../packages/webrtc-core/src/index.ts"],
-      "@connexify/types": ["../../packages/types/index.ts"],
+      "@connexify/types": ["../../packages/types/src/index.ts"],
       "@connexify/utils": ["../../packages/utils/src/index.ts"]
-
     }
   },
-  "include": [
-    "src", 
-    "../../packages/*/src/**/*" ,
-    "src/vite-env.d.ts"
-  ]
+  "include": ["src", "../../packages/*/src/**/*", "src/vite-env.d.ts"]
 }
