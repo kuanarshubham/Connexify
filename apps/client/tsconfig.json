@@ -1,16 +1,3 @@
-// {
-//   "files": [],
-//   "references": [
-//     { "path": "./tsconfig.app.json" },
-//     { "path": "./tsconfig.node.json" },
-//     {"path": "../../packages/core-sdk"},
-//     {"path": "../../packages/types"},
-//     {"path": "../../packages/webrtc-core"},
-//     {"path": "../../packages/utils"},
-//   ]
-// }
-
-
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
@@ -43,10 +30,12 @@
       "@connexify/webrtc-core": ["../../packages/webrtc-core/src/index.ts"],
       "@connexify/types": ["../../packages/types/src/index.ts"],
       "@connexify/utils": ["../../packages/utils/src/index.ts"]
+
     }
   },
   "include": [
     "src", 
-    "../../packages/*/src/**/*" 
+    "../../packages/*/src/**/*" ,
+    "src/vite-env.d.ts"
   ]
 }

@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+
+    /* 🟢 GLOBAL PATHS (Relative to Root) */
+    "paths": {
+      "@connexify/core-sdk": ["./packages/core-sdk/src/index.ts"],
+      "@connexify/webrtc-core": ["./packages/webrtc-core/src/index.ts"],
+      "@connexify/types": ["./packages/types/src/index.ts"],
+      "@connexify/utils": ["./packages/utils/src/index.ts"]
+    }
+  },
+  "include": [],
+  "references": []
+}

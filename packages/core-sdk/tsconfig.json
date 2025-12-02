@@ -10,10 +10,5 @@
     "skipLibCheck": true,
     "composite": true
   },
-  "references": [
-    { "path": "../utils" },
-    { "path": "../types" },
-    {"path": "../webrtc-core"}
-  ],
   "include": ["src"]
 }
