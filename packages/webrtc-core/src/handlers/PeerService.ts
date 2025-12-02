@@ -1,4 +1,4 @@
-export class PeerService {
+class PeerService {
     public peerConnection: RTCPeerConnection;
     private config: RTCConfiguration = {
         iceServers: [
@@ -16,3 +16,5 @@ export class PeerService {
     }
 
 }
+
+export default PeerService;

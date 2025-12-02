@@ -28,7 +28,7 @@
     "paths": {
       "@connexify/core-sdk": ["../../packages/core-sdk/src/index.ts"],
       "@connexify/webrtc-core": ["../../packages/webrtc-core/src/index.ts"],
-      "@connexify/types": ["../../packages/types/src/index.ts"],
+      "@connexify/types": ["../../packages/types/index.ts"],
       "@connexify/utils": ["../../packages/utils/src/index.ts"]
 
     }

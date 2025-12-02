@@ -1,7 +1,7 @@
 {
   "name": "@connexify/core-sdk",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "type": "module",
   "scripts": {
     "core-sdk": "tsc -b --verbose"
