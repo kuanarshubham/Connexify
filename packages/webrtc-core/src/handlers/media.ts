@@ -1,6 +1,6 @@
 import type {constraints} from "@connexify/types" 
 
-export class Media {
+class Media {
   public localStream: MediaStream | null;
 
   constructor(){
@@ -20,3 +20,5 @@ export class Media {
     }
   }
 }
+
+export default Media;
