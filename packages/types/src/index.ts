@@ -1,7 +1,2 @@
-import type { constraints } from "./webrtc-core.js";
-import type { connexifyConfig } from "./core-sdk.js";
-
-
-export type {constraints};
-
-export type {connexifyConfig};
+export * from "./webrtc-core";
+export * from "./core-sdk";
