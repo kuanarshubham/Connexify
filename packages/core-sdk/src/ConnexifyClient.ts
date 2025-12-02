@@ -125,7 +125,7 @@ export class ConnexifyRTCClient {
       await this.peers.get(from)?.setRemoteDescription(new RTCSessionDescription(sdp));
     });
 
-    this.socket.on("ice-candidate", async ({ from, candidate }) => {
+    this.socket.on("ice-candidate", async ({ from, candidate }: { from: string,candidate: RTCIceCandidate }) => {
       if (candidate) {
         try {
           await this.peers.get(from)?.addIceCandidate(new RTCIceCandidate(candidate));
