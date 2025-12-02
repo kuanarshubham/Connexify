@@ -210,7 +210,7 @@ function DemoView() {
 
     try {
       const client = new ConnexifyRTCClient({
-        signalingURL: new URL(url),
+        signalingURL: url,
         constraints: { audio: true, video: true }
       });
 

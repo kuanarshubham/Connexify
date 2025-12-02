@@ -49,7 +49,8 @@ export class ConnexifyRTCClient {
       const pc = new PeerService();
       this.localMediaStream.getTracks().forEach(track => pc.peerConnection.addTrack(track, this.localMediaStream!));
 
-      pc.peerConnection.addEventListener("track", async ({ streams: [stream] }) => {
+      pc.peerConnection.addEventListener("track", async (event: RTCTrackEvent) => {
+        const [stream] = event.streams;
         this.remoteMediaStream.set(peerId, stream);
 
         console.log("📡 Track received:", peerId, stream);
@@ -59,7 +60,7 @@ export class ConnexifyRTCClient {
         }
       });
 
-      pc.peerConnection.addEventListener("icecandidate", ({ candidate }) => {
+      pc.peerConnection.addEventListener("icecandidate", ({ candidate }: RTCPeerConnectionIceEvent) => {
         if (candidate) {
           this.socket.emit("ice-candidate", {
             to: peerId,
