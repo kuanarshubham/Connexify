@@ -1,7 +1,7 @@
 # <img src="./docs/assets/Logo2.png" alt="📡 Connexify" width="40" style="border-radius: 50%; top: 10px"> Connexify
 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![WebRTC](https://img.shields.io/badge/WebRTC-FF6F00?style=for-the-badge)
+![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white)
 ![Media Handling](https://img.shields.io/badge/Media%20Handling-8A2BE2?style=for-the-badge)
 ![Socket.io](https://img.shields.io/badge/Socket.io-000000?style=for-the-badge&logo=socket.io&logoColor=white)
 
